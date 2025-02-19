@@ -1,0 +1,81 @@
+{
+	"name": "sourceFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_source",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "RestaurantAnalysisSourceFile.csv",
+				"container": "raw"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Name",
+				"type": "String"
+			},
+			{
+				"name": "City",
+				"type": "String"
+			},
+			{
+				"name": "Speciality_1",
+				"type": "String"
+			},
+			{
+				"name": "Speciality_2",
+				"type": "String"
+			},
+			{
+				"name": "AvgDinnerPrice",
+				"type": "String"
+			},
+			{
+				"name": "AvgLunchPrice",
+				"type": "String"
+			},
+			{
+				"name": "TotalRating",
+				"type": "String"
+			},
+			{
+				"name": "DinnerRating",
+				"type": "String"
+			},
+			{
+				"name": "LunchRating",
+				"type": "String"
+			},
+			{
+				"name": "Lat",
+				"type": "String"
+			},
+			{
+				"name": "Long",
+				"type": "String"
+			},
+			{
+				"name": "Has_Table_booking",
+				"type": "String"
+			},
+			{
+				"name": "Has_Online_delivery",
+				"type": "String"
+			},
+			{
+				"name": "Votes",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

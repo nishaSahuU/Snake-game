@@ -1,0 +1,9 @@
+{
+	"name": "dfnisha",
+	"location": "southindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "790a77b5-c9e6-4dd7-9c1a-61547e888c3b",
+		"tenantId": "84f1e4ea-8554-43e1-8709-f0b8589ea118"
+	}
+}

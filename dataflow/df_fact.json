@@ -1,0 +1,174 @@
+{
+	"name": "df_fact",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"name": "sourceFileFact"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					},
+					"name": "CityFile"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Name as string,",
+				"          City as string,",
+				"          Speciality_1 as string,",
+				"          Speciality_2 as string,",
+				"          AvgDinnerPrice as string,",
+				"          AvgLunchPrice as string,",
+				"          TotalRating as string,",
+				"          DinnerRating as string,",
+				"          LunchRating as string,",
+				"          Lat as string,",
+				"          Long as string,",
+				"          Has_Table_booking as string,",
+				"          Has_Online_delivery as string,",
+				"          Votes as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourceFileFact",
+				"source(output(",
+				"          CITY_ID as string,",
+				"          CITY_NAME as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CityFile",
+				"sourceFileFact select(mapColumn(",
+				"          City,",
+				"          Speciality_1,",
+				"          Speciality_2,",
+				"          AvgDinnerPrice,",
+				"          AvgLunchPrice,",
+				"          TotalRating,",
+				"          DinnerRating,",
+				"          LunchRating,",
+				"          Lat,",
+				"          Long,",
+				"          Has_Table_booking,",
+				"          Has_Online_delivery,",
+				"          Votes",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1, CityFile join(City == CITY_NAME,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 select(mapColumn(",
+				"          CITY_ID,",
+				"          Speciality_1,",
+				"          Speciality_2,",
+				"          AvgDinnerPrice,",
+				"          AvgLunchPrice,",
+				"          TotalRating,",
+				"          DinnerRating,",
+				"          LunchRating,",
+				"          Lat,",
+				"          Long,",
+				"          Has_Table_booking,",
+				"          Has_Online_delivery,",
+				"          Votes",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 keyGenerate(output(FACT_ID as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"surrogateKey1 select(mapColumn(",
+				"          Fact_Id = FACT_ID,",
+				"          City_Id = CITY_ID,",
+				"          Speciality_1_Id = Speciality_1,",
+				"          Speciality_2_Id = Speciality_2,",
+				"          AVGDINNERPRICE = AvgDinnerPrice,",
+				"          AVGLUNCHPRICE = AvgLunchPrice,",
+				"          TOTALRATING = TotalRating,",
+				"          LUNCHRATING = LunchRating,",
+				"          DINNERRATING = DinnerRating,",
+				"          LAT = Lat,",
+				"          LONG_FLD = Long,",
+				"          HAS_TABLE_BOOOKING = Has_Table_booking,",
+				"          HAS_ONLINE_BOOKING = Has_Online_delivery,",
+				"          VOTES = Votes",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 aggregate(groupBy(Fact_Id),",
+				"     each(match(name!='Fact_Id'), $$ = first($$))) ~> aggregate1",
+				"aggregate1 filter(contains(array(toString(columns())),!isNull(#item))) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Fact_Id as string,",
+				"          City_Id as string,",
+				"          Speciality_1_Id as string,",
+				"          Speciality_2_Id as string,",
+				"          AVGDINNERPRICE as string,",
+				"          AVGLUNCHPRICE as string,",
+				"          TOTALRATING as string,",
+				"          LUNCHRATING as string,",
+				"          DINNERRATING as string,",
+				"          LAT as string,",
+				"          LONG_FLD as string,",
+				"          HAS_TABLE_BOOOKING as string,",
+				"          HAS_ONLINE_BOOKING as string,",
+				"          VOTES as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

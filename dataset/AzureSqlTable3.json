@@ -1,0 +1,74 @@
+{
+	"name": "AzureSqlTable3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Fact_Id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "City_Id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Speciality_1_Id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Speciality_2_Id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AVGDINNERPRICE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AVGLUNCHPRICE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TOTALRATING",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LUNCHRATING",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DINNERRATING",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LAT",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LONG_FLD",
+				"type": "nvarchar"
+			},
+			{
+				"name": "HAS_TABLE_BOOOKING",
+				"type": "nvarchar"
+			},
+			{
+				"name": "HAS_ONLINE_BOOKING",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VOTES",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "FACT_HOTEL"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
