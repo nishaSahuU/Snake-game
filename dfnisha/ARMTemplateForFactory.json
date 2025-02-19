@@ -1,0 +1,902 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "dfnisha"
+		},
+		"AzureSqlDatabase1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
+		},
+		"AzureSqlDatabase2_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase2'"
+		},
+		"ls_blob_source_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_blob_source'"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlservernisha.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqldbnisha"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adm"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlservernisha.database.windows.net"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqldbnisha"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adm"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/plFact')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dfFact",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_fact",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceFileFact": {},
+									"CityFile": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-02-19T09:12:26Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_fact')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_city')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_city",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceFile": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-02-19T06:26:20Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_city')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CITY_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CITY_NAME",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DIM_CITY"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CITY_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CITY_NAME",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DIM_CITY"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Fact_Id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "City_Id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Speciality_1_Id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Speciality_2_Id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AVGDINNERPRICE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AVGLUNCHPRICE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TOTALRATING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LUNCHRATING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DINNERRATING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LAT",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LONG_FLD",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HAS_TABLE_BOOOKING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HAS_ONLINE_BOOKING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "VOTES",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "FACT_HOTEL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable4')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Fact_Id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "City_Id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Speciality_1_Id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Speciality_2_Id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AVGDINNERPRICE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AVGLUNCHPRICE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TOTALRATING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LUNCHRATING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DINNERRATING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LAT",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LONG_FLD",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HAS_TABLE_BOOOKING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HAS_ONLINE_BOOKING",
+						"type": "nvarchar"
+					},
+					{
+						"name": "VOTES",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "FACT_HOTEL"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_blob_source",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RestaurantAnalysisSourceFile.csv",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Name",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "Speciality_1",
+						"type": "String"
+					},
+					{
+						"name": "Speciality_2",
+						"type": "String"
+					},
+					{
+						"name": "AvgDinnerPrice",
+						"type": "String"
+					},
+					{
+						"name": "AvgLunchPrice",
+						"type": "String"
+					},
+					{
+						"name": "TotalRating",
+						"type": "String"
+					},
+					{
+						"name": "DinnerRating",
+						"type": "String"
+					},
+					{
+						"name": "LunchRating",
+						"type": "String"
+					},
+					{
+						"name": "Lat",
+						"type": "String"
+					},
+					{
+						"name": "Long",
+						"type": "String"
+					},
+					{
+						"name": "Has_Table_booking",
+						"type": "String"
+					},
+					{
+						"name": "Has_Online_delivery",
+						"type": "String"
+					},
+					{
+						"name": "Votes",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_blob_source')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sourceFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_blob_source",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RestaurantAnalysisSourceFile.csv",
+						"container": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Name",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "Speciality_1",
+						"type": "String"
+					},
+					{
+						"name": "Speciality_2",
+						"type": "String"
+					},
+					{
+						"name": "AvgDinnerPrice",
+						"type": "String"
+					},
+					{
+						"name": "AvgLunchPrice",
+						"type": "String"
+					},
+					{
+						"name": "TotalRating",
+						"type": "String"
+					},
+					{
+						"name": "DinnerRating",
+						"type": "String"
+					},
+					{
+						"name": "LunchRating",
+						"type": "String"
+					},
+					{
+						"name": "Lat",
+						"type": "String"
+					},
+					{
+						"name": "Long",
+						"type": "String"
+					},
+					{
+						"name": "Has_Table_booking",
+						"type": "String"
+					},
+					{
+						"name": "Has_Online_delivery",
+						"type": "String"
+					},
+					{
+						"name": "Votes",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_blob_source')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sqlStore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CITY_ID",
+						"type": "varchar"
+					},
+					{
+						"name": "CITY_NAME",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DIM_CITY"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabase1_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabase1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDatabase1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabase2_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabase2_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabase2_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDatabase2_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_blob_source')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_blob_source_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_city')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "sourceFile",
+								"type": "DatasetReference"
+							},
+							"name": "sourceFile"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "sqlStore",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "surrogateKey1"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "select2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Name as string,",
+						"          City as string,",
+						"          Speciality_1 as string,",
+						"          Speciality_2 as string,",
+						"          AvgDinnerPrice as string,",
+						"          AvgLunchPrice as string,",
+						"          TotalRating as string,",
+						"          DinnerRating as string,",
+						"          LunchRating as string,",
+						"          Lat as string,",
+						"          Long as string,",
+						"          Has_Table_booking as string,",
+						"          Has_Online_delivery as string,",
+						"          Votes as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> sourceFile",
+						"sourceFile select(mapColumn(",
+						"          CITY_NAME = City",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 aggregate(groupBy(CITY_NAME),",
+						"     each(match(name!=\"CITY_NAME\"), $$ = first($$))) ~> aggregate1",
+						"sort1 keyGenerate(output(CITY_ID as long),",
+						"     startAt: 1L,",
+						"     stepValue: 1L) ~> surrogateKey1",
+						"aggregate1 sort(asc(CITY_NAME, true)) ~> sort1",
+						"surrogateKey1 select(mapColumn(",
+						"          CITY_ID,",
+						"          CITY_NAME",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          CITY_ID as string,",
+						"          CITY_NAME as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/sourceFile')]",
+				"[concat(variables('factoryId'), '/datasets/sqlStore')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_fact')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "sourceFileFact"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference"
+							},
+							"name": "CityFile"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable4",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "surrogateKey1"
+						},
+						{
+							"name": "select3"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Name as string,",
+						"          City as string,",
+						"          Speciality_1 as string,",
+						"          Speciality_2 as string,",
+						"          AvgDinnerPrice as string,",
+						"          AvgLunchPrice as string,",
+						"          TotalRating as string,",
+						"          DinnerRating as string,",
+						"          LunchRating as string,",
+						"          Lat as string,",
+						"          Long as string,",
+						"          Has_Table_booking as string,",
+						"          Has_Online_delivery as string,",
+						"          Votes as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> sourceFileFact",
+						"source(output(",
+						"          CITY_ID as string,",
+						"          CITY_NAME as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> CityFile",
+						"sourceFileFact select(mapColumn(",
+						"          City,",
+						"          Speciality_1,",
+						"          Speciality_2,",
+						"          AvgDinnerPrice,",
+						"          AvgLunchPrice,",
+						"          TotalRating,",
+						"          DinnerRating,",
+						"          LunchRating,",
+						"          Lat,",
+						"          Long,",
+						"          Has_Table_booking,",
+						"          Has_Online_delivery,",
+						"          Votes",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1, CityFile join(City == CITY_NAME,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join1",
+						"join1 select(mapColumn(",
+						"          CITY_ID,",
+						"          Speciality_1,",
+						"          Speciality_2,",
+						"          AvgDinnerPrice,",
+						"          AvgLunchPrice,",
+						"          TotalRating,",
+						"          DinnerRating,",
+						"          LunchRating,",
+						"          Lat,",
+						"          Long,",
+						"          Has_Table_booking,",
+						"          Has_Online_delivery,",
+						"          Votes",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 keyGenerate(output(FACT_ID as long),",
+						"     startAt: 1L,",
+						"     stepValue: 1L) ~> surrogateKey1",
+						"surrogateKey1 select(mapColumn(",
+						"          Fact_Id = FACT_ID,",
+						"          City_Id = CITY_ID,",
+						"          Speciality_1_Id = Speciality_1,",
+						"          Speciality_2_Id = Speciality_2,",
+						"          AVGDINNERPRICE = AvgDinnerPrice,",
+						"          AVGLUNCHPRICE = AvgLunchPrice,",
+						"          TOTALRATING = TotalRating,",
+						"          LUNCHRATING = LunchRating,",
+						"          DINNERRATING = DinnerRating,",
+						"          LAT = Lat,",
+						"          LONG_FLD = Long,",
+						"          HAS_TABLE_BOOOKING = Has_Table_booking,",
+						"          HAS_ONLINE_BOOKING = Has_Online_delivery,",
+						"          VOTES = Votes",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"select3 aggregate(groupBy(Fact_Id),",
+						"     each(match(name!='Fact_Id'), $$ = first($$))) ~> aggregate1",
+						"aggregate1 filter(contains(array(toString(columns())),!isNull(#item))) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Fact_Id as string,",
+						"          City_Id as string,",
+						"          Speciality_1_Id as string,",
+						"          Speciality_2_Id as string,",
+						"          AVGDINNERPRICE as string,",
+						"          AVGLUNCHPRICE as string,",
+						"          TOTALRATING as string,",
+						"          LUNCHRATING as string,",
+						"          DINNERRATING as string,",
+						"          LAT as string,",
+						"          LONG_FLD as string,",
+						"          HAS_TABLE_BOOOKING as string,",
+						"          HAS_ONLINE_BOOKING as string,",
+						"          VOTES as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable4')]"
+			]
+		}
+	]
+}

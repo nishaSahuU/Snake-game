@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "dfnisha"
+		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
+		"AzureSqlDatabase2_password": {
+			"value": ""
+		},
+		"ls_blob_source_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "sqlservernisha.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "sqldbnisha"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "adm"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_server": {
+			"value": "sqlservernisha.database.windows.net"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_database": {
+			"value": "sqldbnisha"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_userName": {
+			"value": "adm"
+		}
+	}
+}
