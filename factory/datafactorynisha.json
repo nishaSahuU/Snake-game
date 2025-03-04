@@ -1,0 +1,9 @@
+{
+	"name": "datafactorynisha",
+	"location": "southindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "f3d3492d-4ece-4c41-a62f-d49fd2b05272",
+		"tenantId": "84f1e4ea-8554-43e1-8709-f0b8589ea118"
+	}
+}
